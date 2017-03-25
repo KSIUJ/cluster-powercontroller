@@ -11,6 +11,8 @@
 
 #include "FIFO.h"
 
+#include <stdint.h>
+
 struct USART {
 	FIFO rx, tx;
 	volatile bool isBusy;
