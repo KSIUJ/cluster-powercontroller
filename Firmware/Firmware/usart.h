@@ -13,7 +13,7 @@
 
 struct USART {
 	FIFO rx, tx;
-	bool isBusy;
+	volatile bool isBusy;
 	USART(uint8_t RXbuff, uint8_t TXbuff) : rx(RXbuff), tx(TXbuff), isBusy(true) {}
 };
 

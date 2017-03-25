@@ -6,8 +6,8 @@
  */ 
 
 #include "usart.h"
-#include <avr/io.h>
 
+#include <avr/io.h>
 #include <avr/interrupt.h>
 
 USART usart(250, 250);
