@@ -1,4 +1,4 @@
-/* 
+/*
 * FIFO.h
 *
 * Created: 2016-08-21 16:52:36
@@ -16,7 +16,7 @@ public:
 	FIFO(uint8_t lenght);
 	~FIFO();
 	void insert(uint8_t data);
-	void insert(const char * string);
+	void insert(const char *string);
 	uint8_t pop();
 	uint8_t linesInBufffer();
 	bool isFULL();
@@ -24,10 +24,10 @@ public:
 	uint8_t elementCount();
 	void clear();
 private:
-	volatile uint8_t * buffer;
+	volatile uint8_t *buffer;
 	volatile uint8_t head, tail, count, size, lines;
 }; //FIFO
 
-void moveLine(FIFO& a, FIFO& b);
+void moveLine(FIFO &a, FIFO &b);
 
 #endif //__FIFO_H__

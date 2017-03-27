@@ -1,10 +1,9 @@
-/* 
+/*
 * Controller.cpp
 *
 * Created: 2017-03-27 18:54:33
 * Author: Adam
 */
-
 
 #include "controller.h"
 #include "shift_regs.h"
@@ -36,8 +35,10 @@ void Controller::clear() {
 }
 
 void Controller::worker() {
-	if(busy && milis() - start > lenght) clear();
-	usart.tx.insert(ErrorCodes::DONE);
+	if(busy && milis() - start > lenght) {
+		clear();
+		usart.tx.insert(ErrorCodes::DONE);
+	}
 }
 
 Controller controller;

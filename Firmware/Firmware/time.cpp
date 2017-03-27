@@ -1,9 +1,9 @@
 /*
- * time.cpp
- *
- * Created: 2017-03-26 23:21:43
- *  Author: Adam
- */ 
+* time.cpp
+*
+* Created: 2017-03-26 23:21:43
+*  Author: Adam
+*/
 
 #include "time.h"
 #include <avr/io.h>
@@ -16,12 +16,12 @@ uint32_t milis() {
 }
 
 void initTime() {
-	TCCR0A = (1<<WGM01);
+	TCCR0A = (1 << WGM01);
 	OCR0A = 250;
-	TCCR0B = (1<<CS00) | (1<<CS01);
-	TIMSK0 = (1<<OCIE0A);
+	TCCR0B = (1 << CS00) | (1 << CS01);
+	TIMSK0 = (1 << OCIE0A);
 }
 
-ISR(TIMER0_COMPA_vect) {
+ISR (TIMER0_COMPA_vect){
 	_milis++;
 }

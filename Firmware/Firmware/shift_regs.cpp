@@ -1,9 +1,9 @@
 /*
- * shift_regs.cpp
- *
- * Created: 2017-03-25 23:21:43
- *  Author: Adam
- */ 
+* shift_regs.cpp
+*
+* Created: 2017-03-25 23:21:43
+*  Author: Adam
+*/
 
 #include "shift_regs.h"
 #include <avr/io.h>
@@ -23,21 +23,21 @@
 #define SH_CP_HIGH() SH_CP_PORT|=(1<<SH_CP_PIN)
 
 void initRegs() {
-	DDRB |= (1<<PORTB1) | (1<<PORTB2) | (1<<PORTB3) | (1<<PORTB5);
-	PORTB |= (1<<PORTB1);
+	DDRB |= (1 << PORTB1) | (1 << PORTB2) | (1 << PORTB3) | (1 << PORTB5);
+	PORTB |= (1 << PORTB1);
 	setRegs(0xFFFFFFFF);
 }
 
 void regSendByte(uint8_t data) {
 	SH_CP_LOW();
-	for (uint8_t i=0;i<8;i++) {
-		if (data & (1<<i)) DS_HIGH();
+	for(uint8_t i = 0; i < 8; i++) {
+		if(data & (1 << i)) DS_HIGH();
 		else DS_LOW();
-		
+
 		SH_CP_HIGH();
 		SH_CP_LOW();
 	}
-	
+
 }
 
 union regData {
@@ -49,7 +49,7 @@ void setRegs(uint32_t data) {
 	regData x;
 	x.data = data;
 	ST_CP_LOW();
-	for(uint8_t i = 0; i<4; i++) {
+	for(uint8_t i = 0; i < 4; i++) {
 		regSendByte(x.regs[i]);
 	}
 	ST_CP_HIGH();

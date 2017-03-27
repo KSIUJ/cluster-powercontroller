@@ -1,4 +1,4 @@
-/* 
+/*
 * Interpreter.cpp
 *
 * Created: 2017-03-27 14:51:27
@@ -21,12 +21,29 @@ int8_t hex2int(const char hex) {
 	return -1;
 }
 
-void interpreter(char * command) {
-	if(strncmp(Commands::PING, command, 4) == 0) {
+bool testChecksum(char *command) {
+	int16_t sum = 0;
+	uint8_t i = 0;
+	for(; i < 62; i++) {
+		if(command[i + 2] == '\n' || command[i + 3] == '\n') break;
+		sum += command[i];
+	}
+	if(sum == (int16_t) hex2int(command[i]) * 16 + hex2int(command[i + 1])) return true;
+	usart.tx.insert(ErrorCodes::INVALID_CHECKSUM);
+	return false;
+}
+
+void interpreter(char *command) {
+	if(command[0] == '\0' || command[1] == '\0' || command[2] == '\0') {
+		usart.tx.insert(ErrorCodes::UNKNOWN_COMMAND);
+	}
+	else if(strncmp(Commands::PING, command, 4) == 0) {
 		usart.tx.insert(ErrorCodes::OK);
-	} else if(strncmp(Commands::POWER_ON, command, 4) == 0 || strncmp(Commands::HALT, command, 4) == 0) {
+	}
+	else if(strncmp(Commands::POWER_ON, command, 4) == 0 || strncmp(Commands::HALT, command, 4) == 0) {
+		//if(testChecksum(command)) return; //TODO: enable this
 		uint32_t value = 0;
-		for(int i = 4; i < 12; i++) {
+		for(uint8_t i = 4; i < 12; i++) {
 			int8_t x = hex2int(command[i]);
 			if(x < 0) {
 				usart.tx.insert(ErrorCodes::INVALID_ARGS);
@@ -38,9 +55,13 @@ void interpreter(char * command) {
 		usart.tx.insert(ErrorCodes::OK);
 		if(strncmp(Commands::POWER_ON, command, 4) == 0) controller.setOutputs(value, 500);
 		else controller.setOutputs(value, 5000);
-	} else if(strncmp(Commands::RESET_CONTROLLER, command, 4) == 0) {
-		while(true) {} //Trigger watchdog
-	} else {
+	}
+	else if(strncmp(Commands::RESET_CONTROLLER, command, 4) == 0) {
+		usart.tx.insert(ErrorCodes::OK);
+		while(true) {
+		} //Trigger watchdog
+	}
+	else {
 		usart.tx.insert(ErrorCodes::UNKNOWN_COMMAND);
 	}
 }

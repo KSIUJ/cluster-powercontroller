@@ -1,9 +1,9 @@
 /*
- * Firmware.cpp
- *
- * Created: 2017-03-03 20:23:59
- * Author : Adam
- */ 
+* Firmware.cpp
+*
+* Created: 2017-03-03 20:23:59
+* Author : Adam
+*/
 
 #include "usart.h"
 #include "shift_regs.h"
@@ -18,8 +18,10 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-uint8_t resetSource __attribute__ ((section (".noinit")));
-void wdtPreInit() __attribute__((naked)) __attribute__((section(".init3")));
+uint8_t resetSource __attribute__((section(".noinit")));
+void wdtPreInit() __attribute__
+((naked)) __attribute__((section(".init3")));
+
 void wdtPreInit() {
 	resetSource = MCUSR;
 	MCUSR = 0;
@@ -30,20 +32,20 @@ int main(void) {
 	initTime();
 	initUSART();
 	initRegs();
-	
-	DDRB |= (1<<PORTB1);
+
+	DDRB |= (1 << PORTB1);
 	sei();
-	
-	usart.tx.insert("KSI controller v0.1\r\n");
-	if(resetSource & (1<<WDRF)) usart.tx.insert(ErrorCodes::WATCHDOG_RESTART);
-	else if(resetSource & (1<<BORF)) usart.tx.insert(ErrorCodes::BROWNOUT);
+
+	usart.tx.insert("KSI controller v1.0.0\r\n");
+	if(resetSource & (1 << WDRF)) usart.tx.insert(ErrorCodes::WATCHDOG_RESTART);
+	else if(resetSource & (1 << BORF)) usart.tx.insert(ErrorCodes::BROWNOUT);
 	else usart.tx.insert(ErrorCodes::HELLO);
-	
+
 	char command[65];
-	
+
 	wdt_enable(WDTO_8S); //TODO: set to 100ms
-	
-    while (1) {
+
+	while(true) {
 		sendUSART();
 		controller.worker();
 
@@ -53,14 +55,14 @@ int main(void) {
 				usart.tx.insert(ErrorCodes::BUFFER_OVERFLOW);
 				continue;
 			}
-			
-			if(usart.rx.linesInBufffer() > 0) {	
+
+			if(usart.rx.linesInBufffer() > 0) {
 				bool lineEnd = false;
-				int i = 0;
-				for(; i<64; i++) {
+				uint8_t i = 0;
+				for(; i < 64; i++) {
 					command[i] = usart.rx.pop();
 					if(command[i] == '\n') {
-						command[i+1] = '\0';
+						command[i + 1] = '\0';
 						lineEnd = true;
 						break;
 					}
@@ -71,10 +73,9 @@ int main(void) {
 					usart.tx.insert(ErrorCodes::COMMAND_TOO_LONG);
 				}
 			}
-			
-		}
-		
-		wdt_reset();
-    }
-}
 
+		}
+
+		wdt_reset();
+	}
+}
