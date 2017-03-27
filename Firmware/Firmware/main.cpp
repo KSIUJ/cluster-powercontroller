@@ -7,6 +7,7 @@
 
 #include "usart.h"
 #include "shift_regs.h"
+#include "time.h"
 
 #include <avr/io.h>
 
@@ -16,6 +17,7 @@
 
 
 int main(void) {
+	initTime();
 	initUSART();
 	initRegs();
 	

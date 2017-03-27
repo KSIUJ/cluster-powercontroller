@@ -182,6 +182,12 @@
     <Compile Include="shift_regs.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="time.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="time.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="usart.cpp">
       <SubType>compile</SubType>
     </Compile>
