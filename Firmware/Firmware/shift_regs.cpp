@@ -15,12 +15,12 @@
 #define SH_CP_PORT PORTB
 #define SH_CP_PIN  5
 
-#define DS_low()  DS_PORT&=~(1<<DS_PIN)
-#define DS_high() DS_PORT|=(1<<DS_PIN)
-#define ST_CP_low()  ST_CP_PORT&=~(1<<ST_CP_PIN)
-#define ST_CP_high() ST_CP_PORT|=(1<<ST_CP_PIN)
-#define SH_CP_low()  SH_CP_PORT&=~(1<<SH_CP_PIN)
-#define SH_CP_high() SH_CP_PORT|=(1<<SH_CP_PIN)
+#define DS_LOW()  DS_PORT&=~(1<<DS_PIN)
+#define DS_HIGH() DS_PORT|=(1<<DS_PIN)
+#define ST_CP_LOW()  ST_CP_PORT&=~(1<<ST_CP_PIN)
+#define ST_CP_HIGH() ST_CP_PORT|=(1<<ST_CP_PIN)
+#define SH_CP_LOW()  SH_CP_PORT&=~(1<<SH_CP_PIN)
+#define SH_CP_HIGH() SH_CP_PORT|=(1<<SH_CP_PIN)
 
 void initRegs() {
 	DDRB |= (1<<PORTB1) | (1<<PORTB2) | (1<<PORTB3) | (1<<PORTB5);
@@ -29,17 +29,15 @@ void initRegs() {
 }
 
 void regSendByte(uint8_t data) {
-	SH_CP_low();
-	ST_CP_low();
-	for (uint8_t i=0;i<8;i++)
-	{
-		if (data & (1<<i)) DS_high();
-		else DS_low();
+	SH_CP_LOW();
+	for (uint8_t i=0;i<8;i++) {
+		if (data & (1<<i)) DS_HIGH();
+		else DS_LOW();
 		
-		SH_CP_high();
-		SH_CP_low();
+		SH_CP_HIGH();
+		SH_CP_LOW();
 	}
-	ST_CP_high();
+	
 }
 
 union regData {
@@ -50,7 +48,9 @@ union regData {
 void setRegs(uint32_t data) {
 	regData x;
 	x.data = data;
+	ST_CP_LOW();
 	for(uint8_t i = 0; i<4; i++) {
 		regSendByte(x.regs[i]);
 	}
+	ST_CP_HIGH();
 }

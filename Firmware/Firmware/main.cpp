@@ -8,7 +8,8 @@
 #include "usart.h"
 #include "shift_regs.h"
 #include "time.h"
-
+#include "proto.h"
+#include "Interpreter.h"
 #include <avr/io.h>
 
 #define F_CPU 16000000UL
@@ -23,26 +24,41 @@ int main(void) {
 	
 	DDRB |= (1<<PORTB1);
 	
-	sei();	
+	sei();
 	
-	usart.tx.insertString("KSI controller v0.0.1\r\n");
+	usart.tx.insert("KSI controller v0.1\r\n");
+	usart.tx.insert(ErrorCodes::HELLO);
+	
+	char command[65];
 	
     while (1) {
 		sendUSART();
 
 		if(!usart.rx.isEmpty()) {
-			uint8_t x = usart.rx.pop();
-			if(x=='1') {
-				PORTB |= 1;
-				usart.tx.insertString("enable\r\n");
-				setRegs(0);
-				
+			if(usart.rx.isFULL()) {
+				usart.rx.clear();
+				usart.tx.insert(ErrorCodes::BUFFER_OVERFLOW);
+				continue;
 			}
-			else {
-				PORTB ^= 1;
-				usart.tx.insertString("disable\r\n");
-				setRegs(0xFFFFFFFF);
+			
+			if(usart.rx.linesInBufffer() > 0) {	
+				bool lineEnd = false;
+				int i = 0;
+				for(; i<64; i++) {
+					command[i] = usart.rx.pop();
+					if(command[i] == '\n') {
+						command[i+1] = '\0';
+						lineEnd = true;
+						break;
+					}
+				}
+				if(lineEnd) interpreter(command);
+				else {
+					while(usart.rx.linesInBufffer() > 0) usart.rx.pop();
+					usart.tx.insert(ErrorCodes::COMMAND_TOO_LONG);
+				}
 			}
+			
 		}
     }
 }

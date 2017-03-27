@@ -57,7 +57,7 @@ uint8_t FIFO::pop() {
 	return x;
 }
 
-void FIFO::insertString(const char * string) {
+void FIFO::insert(const char * string) {
 	for(int i = 0;; i++) {
 		if(string[i] == '\0') break;
 		insert(string[i]);
@@ -73,4 +73,10 @@ void moveLine(FIFO& a, FIFO& b) {
 		c = a.pop();
 		b.insert(c);
 	} while(c!='\n');
+}
+
+void FIFO::clear() {
+	uint8_t sreg = SREG; cli();
+	while(!isEmpty()) pop();
+	SREG = sreg;
 }
