@@ -11,11 +11,19 @@
 #include "proto.h"
 #include "Interpreter.h"
 #include <avr/io.h>
+#include <avr/wdt.h>
 
 #define F_CPU 16000000UL
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+uint8_t resetSource __attribute__ ((section (".noinit")));
+void wdtPreInit() __attribute__((naked)) __attribute__((section(".init3")));
+void wdtPreInit() {
+	resetSource = MCUSR;
+	MCUSR = 0;
+	wdt_disable();
+}
 
 int main(void) {
 	initTime();
@@ -23,13 +31,16 @@ int main(void) {
 	initRegs();
 	
 	DDRB |= (1<<PORTB1);
-	
 	sei();
 	
 	usart.tx.insert("KSI controller v0.1\r\n");
-	usart.tx.insert(ErrorCodes::HELLO);
+	if(resetSource & (1<<WDRF)) usart.tx.insert(ErrorCodes::WATCHDOG_RESTART);
+	else if(resetSource & (1<<BORF)) usart.tx.insert(ErrorCodes::BROWNOUT);
+	else usart.tx.insert(ErrorCodes::HELLO);
 	
 	char command[65];
+	
+	wdt_enable(WDTO_8S); //TODO: set to 100ms
 	
     while (1) {
 		sendUSART();
@@ -60,6 +71,8 @@ int main(void) {
 			}
 			
 		}
+		
+		wdt_reset();
     }
 }
 

@@ -20,7 +20,7 @@ void interpreter(char * command) {
 	} else if(strncmp(Commands::HALT, command, 4) == 0) {
 	
 	} else if(strncmp(Commands::RESET_CONTROLLER, command, 4) == 0) {
-	
+		while(true) {} //Trigger watchdog
 	} else {
 		usart.tx.insert(ErrorCodes::UNKNOWN_COMMAND);
 	}
