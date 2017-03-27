@@ -9,7 +9,8 @@
 #include "shift_regs.h"
 #include "time.h"
 #include "proto.h"
-#include "Interpreter.h"
+#include "interpreter.h"
+#include "controller.h"
 #include <avr/io.h>
 #include <avr/wdt.h>
 
@@ -44,6 +45,7 @@ int main(void) {
 	
     while (1) {
 		sendUSART();
+		controller.worker();
 
 		if(!usart.rx.isEmpty()) {
 			if(usart.rx.isFULL()) {
