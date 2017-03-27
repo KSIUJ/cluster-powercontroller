@@ -26,6 +26,7 @@ bool testChecksum(char *command) {
 	uint8_t i = 0;
 	for(; i < 62; i++) {
 		if(command[i + 2] == '\n' || command[i + 3] == '\n') break;
+		sum *= 3;
 		sum += command[i];
 	}
 	if(sum == (int16_t) hex2int(command[i]) * 16 + hex2int(command[i + 1])) return true;

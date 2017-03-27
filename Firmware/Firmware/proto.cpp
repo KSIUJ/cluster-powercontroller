@@ -22,7 +22,16 @@ const char * ErrorCodes::HARDWARE_ERROR = "30 HARDWARE ERROR\r\n";
 const char * ErrorCodes::WATCHDOG_RESTART = "31 WATCHDOG RESTART\r\n";
 const char * ErrorCodes::BROWNOUT = "32 BROWNOUT RESTART\r\n";
 
+// Syntax:
+// <command><args><checksum>\r\n
+// Checksum algorithm: simple hashing function H[i + 1] = H[i]*3 + C[i] (mod int16)
+
+// Replies with 00 OK, no checksum required
 const char * Commands::PING = "PING";
+
+// Args: uint32 in ascii hex (without leading 0x); Replies with 00 OK, starts job in async, sends 02 DONE when finished
 const char * Commands::POWER_ON = "PWON";
 const char * Commands::HALT = "HALT";
+
+// Replies with 00 OK ans 31 WATCHDOG RESTART, no checksum required
 const char * Commands::RESET_CONTROLLER = "RSTC";
