@@ -30,7 +30,7 @@ void initRegs() {
 
 void regSendByte(uint8_t data) {
 	SH_CP_LOW();
-	for(uint8_t i = 0; i < 8; i++) {
+	for(int8_t i = 7; i >= 0; i--) {
 		if(data & (1 << i)) DS_HIGH();
 		else DS_LOW();
 
@@ -49,7 +49,7 @@ void setRegs(uint32_t data) {
 	regData x;
 	x.data = data;
 	ST_CP_LOW();
-	for(uint8_t i = 0; i < 4; i++) {
+	for(int8_t i = 3; i >= 0; i--) {
 		regSendByte(x.regs[i]);
 	}
 	ST_CP_HIGH();

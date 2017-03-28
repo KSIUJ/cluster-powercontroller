@@ -55,10 +55,11 @@ void interpreter(char *command) {
 		}
 		usart.tx.insert(ErrorCodes::OK);
 		if(strncmp(Commands::POWER_ON, command, 4) == 0) controller.setOutputs(value, 500);
-		else controller.setOutputs(value, 5000);
+		else controller.setOutputs(value, 5500);
 	}
 	else if(strncmp(Commands::RESET_CONTROLLER, command, 4) == 0) {
 		usart.tx.insert(ErrorCodes::OK);
+		sendUSART();
 		while(true) {
 		} //Trigger watchdog
 	}

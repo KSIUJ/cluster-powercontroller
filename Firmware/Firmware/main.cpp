@@ -38,12 +38,13 @@ int main(void) {
 
 	usart.tx.insert("KSI controller v1.0.0\r\n");
 	if(resetSource & (1 << WDRF)) usart.tx.insert(ErrorCodes::WATCHDOG_RESTART);
-	else if(resetSource & (1 << BORF)) usart.tx.insert(ErrorCodes::BROWNOUT);
+	//else if(resetSource & (1 << BORF)) usart.tx.insert(ErrorCodes::BROWNOUT);
 	else usart.tx.insert(ErrorCodes::HELLO);
 
 	char command[65];
 
-	wdt_enable(WDTO_8S); //TODO: set to 100ms
+	wdt_enable(WDTO_120MS); //TODO: set to 
+	SLED_ON();
 
 	while(true) {
 		sendUSART();

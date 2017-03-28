@@ -9,6 +9,8 @@
 #ifndef PROTO_H_
 #define PROTO_H_
 
+#include <avr/io.h>
+
 struct ErrorCodes {
 	static const char * OK;
 	static const char * HELLO;
@@ -32,5 +34,12 @@ struct Commands {
 	static const char * HALT;
 	static const char * RESET_CONTROLLER;
 };
+
+
+//Status LED
+#define SLED_PORT    PORTB
+#define SLED_PIN     0
+#define SLED_OFF()  SLED_PORT&=~(1<<SLED_PIN)
+#define SLED_ON() SLED_PORT|=(1<<SLED_PIN)
 
 #endif /* PROTO_H_ */
