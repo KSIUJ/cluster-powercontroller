@@ -24,7 +24,7 @@ const char * ErrorCodes::BROWNOUT = "32 BROWNOUT RESTART\r\n";
 
 // Syntax:
 // <command><args><checksum>\r\n
-// Checksum algorithm: simple hashing function H[i + 1] = H[i]*3 + C[i] (mod int16)
+// Checksum algorithm: XOR on chars (8 bits)
 
 // Replies with 00 OK, no checksum required
 const char * Commands::PING = "PING";

@@ -22,14 +22,13 @@ int8_t hex2int(const char hex) {
 }
 
 bool testChecksum(char *command) {
-	int16_t sum = 0;
+	int8_t sum = 0;
 	uint8_t i = 0;
 	for(; i < 62; i++) {
 		if(command[i + 2] == '\n' || command[i + 3] == '\n') break;
-		sum *= 3;
-		sum += command[i];
+		sum ^= command[i];
 	}
-	if(sum == (int16_t) hex2int(command[i]) * 16 + hex2int(command[i + 1])) return true;
+	if(sum == hex2int(command[i]) * 16 + hex2int(command[i + 1])) return true;
 	usart.tx.insert(ErrorCodes::INVALID_CHECKSUM);
 	return false;
 }
@@ -50,8 +49,8 @@ void interpreter(char *command) {
 				usart.tx.insert(ErrorCodes::INVALID_ARGS);
 				return;
 			}
-			value *= 16;
-			value += x;
+			value <<= 4;
+			value |= x;
 		}
 		usart.tx.insert(ErrorCodes::OK);
 		if(strncmp(Commands::POWER_ON, command, 4) == 0) controller.setOutputs(value, 500);

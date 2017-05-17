@@ -34,7 +34,7 @@ void Controller::setOutputs(uint32_t data, uint16_t pulseLenght) {
 	lenght = pulseLenght;
 	uint32_t ports = 0;
 	for(uint8_t i = 0; i < 32; i++) {
-		if(data & (1 << i)) 
+		if(data & ((uint32_t)1 << i)) 
 		ports |= ((uint32_t)1 << portMap[i]);
 	}
 	setRegs(~ports);
